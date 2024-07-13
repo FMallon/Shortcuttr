@@ -4,7 +4,7 @@
 
 if [ -n "$BASH_VERSION" ]; then
   INSTALLATION_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
-elif [ -n "$ZHS_VERSION"]; then  
+elif [ -n "$ZSH_VERSION" ]; then  
   INSTALLATION_DIR="$(cd "$(dirname "$0")" && pwd)"
 fi  
 
@@ -26,9 +26,14 @@ MANUAL_DIR="/usr/local/share/man/man1/"
 
 removeFolder(){
   
-# Remove Shortcuttr  
-  
-  read -p "Are you sure you wish to uninstall the Program & your saved Data? (y/n):" answer
+# Remove Shortcuttr 
+
+  if [ -n "$BASH_VERSION" ]; then  
+    read -p "Are you sure you wish to uninstall the Program & your saved Data? (y/n):" answer
+  elif [ -n "$ZSH_VERSION" ]; then
+    echo "Are you sure you wish to unistall the Program & your saved Data (y/n): \c" 
+    read answer
+  fi
 
   case "$answer" in
   
@@ -40,8 +45,9 @@ removeFolder(){
     ;;
     
     *)
-      printDelayedText "Aborting Uninstall process........."
-     ;;
+      printDelayedText "Aborting Uninstall process........." && 
+      exit
+    ;;
 
   esac  
 
@@ -53,6 +59,8 @@ removeAlias(){
 
   sed -i "/^alias sc=/d" "$HOME/.bashrc" &
   sed -i "/^alias sc=/d" "$HOME/.zshrc" &
+
+  echo -e "\n"
 
   printDelayedText "Alias removed from .bashrc & .zshrc"
 
@@ -70,9 +78,19 @@ uninstallShortcuttr(){
   removeAlias &&
   removeManual &&
 
+  echo -e "\n"
+
   printDelayedText "Shortcuttr has been fully Uninstalled" &&
   
-  sleep 0.3
+  echo -e "\n" &&
+
+  sleep 0.3 && 
+
+  if [ -n "$BASH_VERSION" ]; then
+    . ~/.bashrc
+  elif [ -n "$ZSH_VERSION" ]; then
+    . ~/.zshrc
+  fi
   
 } 
 

@@ -33,10 +33,20 @@ sudo chmod u+x $INSTALLATION_DIR/uninstall.sh &&
 
 echo "alias sc='. $MAIN_DIR/directoryShortcut.sh'" >> ~/.bashrc &
 echo "alias sc='. $MAIN_DIR/directoryShortcut.sh'" >> ~/.zshrc &
-. ~/.bashrc &
-. ~/.zshrc &&
+
+sleep 1
+
+echo -e "\n\n"
 
 echo "Shortcuttr installed successfully!" &&
 echo "Use 'sc --help' to view Usage; 'man sc' will bring up full Manual page too!" &&
 
-cd ~
+cd ~ &&
+
+echo -e "\n"
+
+if [ -n "$BASH_VERSION" ]; then
+  . ~/.bashrc
+elif [ -n "$ZSH_VERSION" ]; then
+  . ~/.zshrc
+fi
