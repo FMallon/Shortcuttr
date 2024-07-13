@@ -1,0 +1,75 @@
+.TH SHORTCUTTR sc
+.SH NAME
+Shortcuttr \- sets an Alias to a Directory
+.SH SYNOPSIS
+.B sc
+.RB [ \-c
+.IR Create-Alias ]
+.RB [ \-fc
+.IR  Checks-Database ]
+.RB [ \-fd
+.IR Deletes-Database ]
+.RB [ \-fe
+.IR Edits-Database ]
+.RB [ \-ff
+.IR Flushes-Database ]
+.RB [ \-fs
+.IR Show-Database ]
+.RB [ \--help
+.IR User-Guide]
+.RB [ \--uninstall
+.IR Uninstall-Shortcuttr]
+
+.P
+.SH DESCRIPTION
+.B Shortcuttr
+sets an Alias to a Directory, storing it in a Database so that a User may quickly change directory - even after reboot.  User can also manage the Database, with the ability to Edit, Flush, Delete, and Display
+.SH FLAGS
+.TP
+.B \-c
+Creates the Alias to the current Directory of the User
+
+.SH
+.TP
+.B \-fc
+Checks for the existence of the Database file "shortcuts.txt", and creates it if non-existent
+
+.SH
+.TP
+.B \-fd
+Deletes the whole Database should the User wish so
+
+.SH
+.TP
+.B \-fe
+Enables the User to manually edit the Database to fix any mistakes without having to flush or delete their other Alias'
+
+.SH
+.TP
+.B \-ff
+Deletes all the previously-set Alias' so that the User may begin again
+
+.SH
+.TP
+.B \-fs
+Displays the Database in the CLI for the User so they can easily look at their Alias
+
+.SH 
+.TP
+.B \-fr
+Restores the Database from an automatic backup 
+
+.SH
+.TP
+.B \<Alias Name>
+Brings the User to the corresponding directory set by the User
+
+.SH
+.TP
+.B \--help
+Brings up a summarized User-Manual to help the stupid
+
+.SH AUTHOR
+.B Finn Mallon
+.SH COPYRIGHT
+.B Copyright@2024 Finn Mallon - this script is protected by Law; any unauthorized use is punishable by death by the US Army whom I maintain a strong friendship with!

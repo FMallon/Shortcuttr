@@ -1,0 +1,53 @@
+                      # shortcutDirectory #
+
+
+
+######################## Brief #########################
+
+Essentially, the program sets an Alias to a directory, and stores them in a DB.
+The DB will keep the Alias' constantly there unless the user decides to flush, or delete the file.
+
+########################################################
+######################## TODO ##########################
+
+Largely finished, except for minor kinks and outputs.  
+Flag | -fc | outputs text twice as it is being called always in Main() before everything else.  So maybe focus on a work-around on that.
+
+Learn how to make a Manual page called by "man sc", as with every other command. <--# Done 
+
+Display the Database with | sc -fs | in a nicer format
+
+Make an installation version, and installon a different distro to test
+  -so far, i can run it from the Main, but elsewhere it doesnt work.
+  --it isn't finding the path to the Config, etc.
+
+######################## All Done ########################
+
+##########################################################
+######################## Notes ###########################
+
+One thing to consider in the future - if Database is above a certain amount of rows, output with "less" instead of the current "cat".  "Cat" is more superior has it pertains to a smaller DB, with the DB dispalyed in the CLI for the User who won't have to rely on memory, and added shit such as having to press 'q'; but if a DB gets out-of-hand, it would be more logical to just use "less" (but how likely is it that I will need so many directories also?) Maybe wait to see if this effects me negatively enough in the future to where I need to consider it.  As well as adding extra flags to | -fs | like displaying just the tail, and the head of the DB. 
+
+
+####################################################
+################## How It Works #################### 
+
+Flag:
+            | -c | Create Shortcut <Alias Name> --e.g 'sc -c downloads';
+           | -fc | File Check - checks to see if the Database "Shortcut.txt" exists;
+           | -fe | File Edit - brings the User into the Database via Nano for manual editing;
+           | -ff | File Flush - flushes the Database on User request, so that new Alias' can be set;
+           | -fd | File Delete - allows the user to delete the DB to reset it completely;
+           | -fs | File Show - quickly displays the Database in the CLI for the User via Cat
+           | -fr | File Restore - restores backup Database in case of User-Error;
+        | --help | Displays all the flags for a User, and their relative functions;
+       | <Alias> | This will bring the User to the relative Alias-set Directory;
+   | --uninstall | This will completely Uninstall the Program, and its data; 
+  
+So as stated above: by entering, for example, "sc -c downloads" in the User's Downloads folder, the Alias "downloads" will be entered next to the Directory with ";" as a delimter.
+
+When the User, preferably from a different Directory, enters "sc downloads", the program will change the User to the specified Directory relative to the Alias name.
+
+The Database, "shortcuts.txt" stores the User Alias', and can be Flushed, Deleted, Displayed, and more, by using "sc <flag>".  This allows the User's Alias' to be coninuously used, even after reboot.  |  -fe | will allow the User to manually edit the file, so if a mistake was made, the User won't have to delete everything to re-do one mistake.
+
+Flags are named after the first letter of their functions.  This is why I set most of the flags dealing with the Database as | -fx |.  The letter "f" standing for "File", and the secondary letter acting as their function towards the File, e.g | -fe | being File Edit, and so on.  This nomenclature seemed most logical to me.  
