@@ -12,7 +12,7 @@ From a different directory:
   -  sc proj #User will be sent to the linked directory without having to do the whole "cd /home/name/Documents/MyProjects"
 
 
-This was made in Bash/zShell for server/terminal, and works to not rely on other scripting languages that may be unavailable on certain servers due to space etc.
+This was made in Bash/zShell for quick server/terminal navigation, and works to not rely on other scripting languages that may be unavailable on certain servers due to space etc.  I essentially just made it out of necessity in a server that I was messing around in - as going back and forth with 'CD' was annoying me, and adding Aliases to my .bashrc was getting ridiculous.  It was also a good way to begin learning Bash, then it evolved into zShell.  It definitely works between the two for me, but I opened a Discussion thread so any User can warn ppl that it isn't working, or isn't good.  Would also appreciate if anyone can let me know if it works, and in what environment they are using specifically so that I can update this file and let ppl know.      
 
 
 ###########################################################################################################
@@ -36,7 +36,22 @@ To use: download, then run the install.sh file in the Installation directory.  T
 
 Note: place the download and run installer from the folder you wish to store the Program!
 
+###########################################################################################################
 
+
+## Flags
+
+"f" means "File", and the "File" is the Database! The following letter should become apparent, and after use, should hopefully become easy to remember.  This was the best way for me at the time.  
+
+              -c | Creates the Alias to the current Directory of the User
+             -fc | Checks database's existence, to verify for the User.  Creates database if non-existent
+             -fd | Deletes the whole database file
+             -fe | Edits the database, via Nano  
+             -ff | Flushes the database, keeping the file, but emptying its contents
+             -fr | Restores the database from a backup, in case user accidentally deletes or flushes it.
+             -fs | Shows the database in the terminal for the User to quickly view their Aliases
+    -h || --help | Help menu to show the User the flags 
+     --uninstall | Uninstalls Shortcuttr in a quicker way for the User
 
 
 ###########################################################################################################
