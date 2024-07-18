@@ -46,6 +46,8 @@ createShortCut(){
     printDelayedText "Alias set!"
   fi  
 
+  backupFile
+
 }
 
 changeDir(){
@@ -93,7 +95,9 @@ checkFile(){
 
 editFile(){
 
-  nano $FILE
+  nano $FILE &&
+
+  backupFile
 
 }
 
@@ -118,7 +122,7 @@ flushFile(){
   echo "A backup was created just in case!"  
 }
 
-#-debugpurposes
+#-debug purposes
 deleteFile(){
 
   backupFile
@@ -136,8 +140,36 @@ deleteFile(){
 
 showFile(){
 
-  #Formats the database for a cleaner display for the User
-  cat $FILE | awk -F ';' 'BEGIN { printf "\n\033[1m\033[4m%-15s%-10s\033[0m\n", "ALIAS", "DIRECTORY PATH" } { printf "\n%-15s %-10s\n", $1, $2 }' $FILE && echo ""
+  #-debug purposes
+  #--local temp_file="$SCRIPT_DIR/../Config/tempdb.txt"
+  #--touch "$temp_file"
+
+  # gets the number of DB entries
+  local lineCount=$(wc -l < $FILE)
+  local temp_file=$(mktemp)
+  # this will be the number that decides when to use less || cat to display the DB 
+  local limit=14
+
+  #-debug-purposes
+  #echo "LINE COUNT is $lineCount"
+
+  # might need to carry on with the normal function to cleanly display the data, put it into a temp file, then cat || less the temp file 
+
+  # formatted database command
+  db_formatted=$(cat $FILE | awk -F ';' 'BEGIN { printf "\n\033[1m\033[4m%-15s%-10s\033[0m\n", "ALIAS", "DIRECTORY PATH" } { printf "\n%-15s %-10s\n", $1, $2 }' $FILE && echo "")
+
+
+  # if numbers of DB entries are too big, then output with cat/less depending
+  if [ $lineCount -le $limit ]; then
+    # Formats the database for a cleaner display for the User
+    echo "$db_formatted"
+     
+  elif [ $lineCount -gt $limit ]; then
+    # for use with less, this formats specific to the temporary text file that less will take from
+    echo -e "\n\nALIAS\t\tDIRECTORY PATH\n______________________________\n" > $temp_file 
+    echo "$db_formatted" | awk 'NR > 2' >> $temp_file # skip the first 2 lines cuz it's unreadable shite!
+    less $temp_file
+  fi
 
 }
 
@@ -202,7 +234,7 @@ main(){
     #--debug purposes --this will be an automatic function
     #-fb) backupFile
     #;; 
-    --install) . $INSTALLATION_DIR/install.sh
+    --reinstall) . $INSTALLATION_DIR/install.sh
     ;;  
     --uninstall) . $INSTALLATION_DIR/uninstall.sh
     ;;

@@ -50,7 +50,8 @@ Note: place the download and run installer from the folder you wish to store the
              -ff | Flushes the database, keeping the file, but emptying its contents
              -fr | Restores the database from a backup, in case user accidentally deletes or flushes it.
              -fs | Shows the database in the terminal for the User to quickly view their Aliases
-    -h || --help | Help menu to show the User the flags 
+    -h || --help | Help menu to show the User the flags
+     --reinstall | Runs the installer again, in case of partial install (alias in .bashrc/zshrc must be set)  
      --uninstall | Uninstalls Shortcuttr in a quicker way for the User
 
 
