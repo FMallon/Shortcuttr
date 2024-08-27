@@ -19,13 +19,20 @@ This was made in Bash/zShell for quick server/terminal navigation, and works to 
 
 
 Tested environments include:
-  -  WSL: Fedora, Kali, Ubuntu, Debian, Arch, AthenaOS, Alpine, Alma
-  -  Virtual Machine: Ubuntu, Arch
-  -  AWS: Amazon Linux
+  - WSL: Fedora, Kali, Ubuntu, Debian, Arch, AthenaOS, Alpine, Alma
+  - Virtual Machine: 
+                    - Linux: Ubuntu, Arch
+                    -  Unix: Solaris, FreeBSD
+                    - MacOS: Catalina, Sonora
+  - AWS: Amazon Linux
   - Docker: Ubuntu, Alpine
-  - OS: Arch
+  - OS: Arch, Gentoo, MacOS-Ventura
 
-Couldn't get it working on MacOS - also didn't have the time to try, don't have a MacOS etc.  Issues were related to path-finding to the folder, from what I remember. Might work now, cuz it's possible the issues were fixed..... who knows? 
+OK, so it works in all the tested environments, minus the following issues:
+    
+    1) In MacOS, the installer does not correctly set the alias 'sc' in the .bashrc & .zshrc file.  This must be manually set by the User.  This issue is directly related with MacOS not allowing the 'echo "xxxxx" >> ~/.zshrc' command to be run.  I'm sure I could fix this by using something like 'echo <alias> | sudo tee -a ~/.zshrc'.  But I deleted the VM to make room on my laptop for a third OS, and have no way to test this in the near future.
+    
+    2) In Solaris, the 'sc -fs' flag doesn't work correctly due to Solaris using an older version of 'awk'.  I'm sure there is probably some way to get an up-to-date version of 'awk' on Solaris, but from my experience, the Solaris package manager doesn't allow for it.
 
 It also has built-in functionality to allow users to manually change the Aliases from nano ("sc -fe") so that they can fix a mistake without having to flush everything.
 An automatic backup will be created on flushing the DB, and can be restore via "sc -fr", too.  So there is flexibility in the event of user-error.
@@ -69,4 +76,7 @@ Download to where you want to keep the Program
 Navigate to the Installation folder
   - . ./install.sh
 
-Done! If the Manual page hasn't found it's correct place and doesn't work, just manually move the /Shortcuttr/Documentation/sc.1 file into your Man-page folder.
+If the 'sc' command doesn't work, check your .bashrc/.zshrc files to make sure the alias has been set at the bottom, if not, set manually
+  - alias sc='Set/Your/Directory/Main/directoryShortcut.sh' 
+
+Done! If the Manual page hasn't found it's correct place and doesn't work, just manually move the /Shortcuttr/Documentation/sc.1 file into your Man-page folder.  The Man directory is in "/usr/local/share/man/man1/".  You may have to make the directoryyourself.

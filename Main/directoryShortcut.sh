@@ -40,6 +40,8 @@ createShortCut(){
 
   if [ $check -eq 1 ]; then
     printDelayedText "Alias '$Alias' or '$Cwd' already exists in the database!"
+  elif [ ! -n "$Alias" ]; then 
+    printDelayedText "Sorry, but no! I'm not letting you set an empty Alias.  My program, my rules!"
   else
     printDelayedText "Adding Alias......"
     echo -e "$Alias;$Cwd" >> $FILE

@@ -25,14 +25,12 @@ MANUAL_DIR="/usr/local/share/man/man1/"
 sudo mkdir /usr/local/share/man/man1/ &
 sudo cp "$DOCUMENTATION_DIR/sc.1" "$MANUAL_DIR"
 
-#git clone https://github.com/FinzelWashington/Shortcuttr
-
 # Change file permission
 sudo chmod u+x $MAIN_DIR/directoryShortcut.sh &&
 sudo chmod u+x $INSTALLATION_DIR/uninstall.sh &&
 
-echo "alias sc='. $MAIN_DIR/directoryShortcut.sh'" >> ~/.bashrc &
-echo "alias sc='. $MAIN_DIR/directoryShortcut.sh'" >> ~/.zshrc &
+echo "alias sc='. $MAIN_DIR/directoryShortcut.sh'" | sudo tee -a ~/.bashrc &
+echo "alias sc='. $MAIN_DIR/directoryShortcut.sh'" | sudo tee -a ~/.zshrc &
 
 sleep 1
 
