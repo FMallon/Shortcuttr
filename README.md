@@ -21,8 +21,11 @@ This was made in Bash/zShell for quick server/terminal navigation, and works to 
 Tested environments include:
   - WSL: Fedora, Kali, Ubuntu, Debian, Arch, AthenaOS, Alpine, Alma
   - Virtual Machine: 
+
                     - Linux: Ubuntu, Arch
+    
                     -  Unix: Solaris, FreeBSD
+    
                     - MacOS: Catalina, Sonora
   - AWS: Amazon Linux
   - Docker: Ubuntu, Alpine
@@ -79,4 +82,4 @@ Navigate to the Installation folder
 If the 'sc' command doesn't work, check your .bashrc/.zshrc files to make sure the alias has been set at the bottom, if not, set manually
   - alias sc='Set/Your/Directory/Main/directoryShortcut.sh' 
 
-Done! If the Manual page hasn't found it's correct place and doesn't work, just manually move the /Shortcuttr/Documentation/sc.1 file into your Man-page folder.  The Man directory is in "/usr/local/share/man/man1/".  You may have to make the directoryyourself.
+Done! If the Manual page hasn't found it's correct place and doesn't work, just manually move the /Shortcuttr/Documentation/sc.1 file into your Man-page folder.  The Man directory is in "/usr/local/share/man/man1/".  You may have to make the directory yourself.
