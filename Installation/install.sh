@@ -22,7 +22,7 @@ MANUAL_DIR="/usr/local/share/man/man1/"
 . "$SCRIPT_DIR/printDelayedText.sh"
 
 # Copy Man Page
-sudo mkdir /usr/local/share/man/man1/ &
+sudo mkdir -p /usr/local/share/man/man1/ &&
 sudo cp "$DOCUMENTATION_DIR/sc.1" "$MANUAL_DIR"
 
 # Change file permission
