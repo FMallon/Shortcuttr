@@ -212,7 +212,7 @@ restoreFile(){
 
 }
 
-main(){
+main_sc(){
 
   checkFile_Secondary &&
   sleep 2
@@ -250,4 +250,4 @@ main(){
   esac
 }
 
-main $@
+main_sc $@
