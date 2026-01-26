@@ -22,11 +22,16 @@ printDelayedText(){
   # source config.ini through the setConfig.sh script
   #. "$SCRIPT_DIR/setConfig.sh"
 
+  \printf '\n'
+
   for ((i = 0; i < ${#1}; i++)); do
-    printf "%c" "${1:$i:1}"
-    sleep "$delay"
+
+    \printf "%c" "${1:$i:1}"
+    \sleep "$delay"
+    
   done
-  echo
+
+  \printf '\n\n'
 
 
 }

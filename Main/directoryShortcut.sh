@@ -1,4 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
+
+SCRIPT_PID="$$"
 
 # This should enable flexible use across other Users' distros by creating a set Absolute Path to User's program location;
 if [ -n "$BASH_VERSION" ]; then
@@ -38,19 +40,22 @@ createShortCut(){
   #So this will set $? as a var, and keep it stored 
   check="$?"
 
-  if [ $check -eq 1 ]; then
+  if [ "$check" -eq 1 ]; then
+    
     printDelayedText "Alias '$Alias' or '$Cwd' already exists in the database!"
-  elif [ ! -n "$Alias" ]; then 
-    printDelayedText "Sorry, but no! I'm not letting you set an empty Alias.  My program, my rules!"
+
   else
     printDelayedText "Adding Alias......"
-    echo -e "$Alias;$Cwd" >> $FILE
+    \printf "\n%s;%s\n" "$Alias" "$Cwd" >> "$FILE"
     printDelayedText "Alias set!"
+  
   fi  
 
+  
   backupFile
 
 }
+
 
 changeDir(){
  
@@ -58,56 +63,63 @@ changeDir(){
 
   local Cwd=$(. "$SCRIPT_DIR/searchAlias.sh" $Alias)
   
-  if [ ! -z $Cwd ]; then
+  if [ ! -z "$Cwd" ]; then
     printDelayedText "Changing directory...."
-    cd $Cwd
+    \cd "$Cwd"
   else
     printDelayedText "This Alias does not exist! You can view your Database with | -fs |"
   fi 
 }
 
+
 checkFile_Secondary(){
   #check for file, and create if doesnt exit
   
   
-  if [ -e $FILE ]; then
+  if [ -e "$FILE" ]; then
     
     return 1
   
   else
-    echo 
+
+    \printf "\n" 
     printDelayedText "Database doesn't exist! Creating now...."
-    touch "$FILE"
+    \touch "$FILE" || { \printf "Error: Failed to create Database file!\n"; }
+
   fi
 
 }
 
+
 checkFile(){
 
-  if [ -e $FILE ]; then
+  if [ -e "$FILE" ]; then
 
     printDelayedText "Database file exists!"
 
   else
-    printText "Database doesn't exist! Creating now...."
-    touch "$FILE"
+    printDelayedText "Database doesn't exist! Creating now...."
+    \touch "$FILE" || { \printf "Error: Failed to create Database file!\n"; }
     
   fi
 }
 
+
 editFile(){
 
-  nano $FILE &&
+  nano "$FILE" || vi "$FILE" || vim "$FILE" || nvim "$FILE" || emacs "$FILE" || { \printf "Error: No text editor found! Please install Nano, Vi or Vim to edit the Database file!\n"; . "$SCRIPT_DIR/exitScript.sh" "$$"; }
 
   backupFile
 
 }
 
-readFile(){
 
-  Read $FILE
+#readFile(){
 
-}
+ # Read $FILE
+
+#}
+
 
 flushFile(){
 
@@ -115,14 +127,16 @@ flushFile(){
 
   printDelayedText "Flushing file now......"
 
-  sleep 1
+  \sleep 1
 
-  echo -n "" > $FILE
+  \printf "\n" > "$FILE"
 
-  printDelayedText "File has been flushed!" &&  
+  printDelayedText "File has been flushed!"
 
-  echo "A backup was created just in case!"  
+  \printf "\nA backup was created just in case!\n\n"
+
 }
+
 
 #-debug purposes
 deleteFile(){
@@ -131,123 +145,385 @@ deleteFile(){
 
   printDelayedText "The File is being deleted......"
 
-  rm $FILE && echo ""
+  \rm "$FILE" || { \printf "Error: Failed to delete Database file!\n"; }
 
-  printDelayedText "File is deleted!" &&
+  printDelayedText "File is deleted!"
 
-  echo "A backup was created just in case!"
+  \printf "\nA backup was created just in case!\n\n"
 
 }
 
 
 showFile(){
 
-  #-debug purposes
-  #--local temp_file="$SCRIPT_DIR/../Config/tempdb.txt"
-  #--touch "$temp_file"
+ #Remember: Don't set $LINES for this because in case this environment variable may not exist on Unix;
 
-  # gets the number of DB entries
-  local lineCount=$(wc -l < $FILE)
+  local lineCount=$(wc -l < "$FILE")
   local temp_file=$(mktemp)
-  # this will be the number that decides when to use less || cat to display the DB 
-  local limit=14
 
-  #-debug-purposes
-  #echo "LINE COUNT is $lineCount"
-
-  # might need to carry on with the normal function to cleanly display the data, put it into a temp file, then cat || less the temp file 
-
-  # formatted database command
-  db_formatted=$(cat $FILE | awk -F ';' 'BEGIN { printf "\n\033[1m\033[4m%-15s%-10s\033[0m\n", "ALIAS", "DIRECTORY PATH" } { printf "\n%-15s %-10s\n", $1, $2 }' $FILE && echo "")
+  #the limit that will decide whether to use Cat or Less based on the size of the DB;
+  local limit=25
 
 
-  # if numbers of DB entries are too big, then output with cat/less depending
-  if [ $lineCount -le $limit ]; then
-    # Formats the database for a cleaner display for the User
-    echo "$db_formatted"
-     
-  elif [ $lineCount -gt $limit ]; then
-    # for use with less, this formats specific to the temporary text file that less will take from
-    echo -e "\n\nALIAS\t\tDIRECTORY PATH\n______________________________\n" > $temp_file 
-    echo "$db_formatted" | awk 'NR > 2' >> $temp_file # skip the first 2 lines cuz it's unreadable shite!
-    less $temp_file
+  \printf '\n\n\tALIAS      |      DIRECTORY\n\t_______________________________\n\n' > "$temp_file"
+
+
+  #Dont call the fkn variable 'path' in the 'while read -r' loop because it fucks up zshell $PATH environment variable completely 
+  #and fkn breaks everything and makes me so fkn mad and wasting so much time wondering wtf is going on.... Good to know for the future though!
+  #Maybe making local would fix, but wtf did I not just call it directory in the first place?!
+  #Remember this in case any future issues arise!
+
+  local alias 
+  local directory
+
+  while IFS=';' read -r alias directory; do
+
+    [ -z "$alias" ] && continue
+
+    \printf '\t%-10s |      %s\n' "$alias" "$directory" >> "$temp_file"
+
+  done < "$FILE"
+
+
+  if [ "$lineCount" -gt "$limit" ]; then
+
+    \less "$temp_file"
+
+  else
+
+    \cat "$temp_file"
+
+  fi
+
+
+  \rm -f "$temp_file"
+
+  \printf "\n\n"
+
+  
+}
+
+
+listAliases(){
+
+  #List all shortcuts and allow user to enter directory by selecting number from list
+
+  local alias_index=1
+
+  declare -A aliases
+
+#Read in file and store aliases in array!
+  printf "\n"
+  while IFS=';' read -r alias directory; do
+
+    [ -z "$alias" ] && continue
+
+    aliases[$alias_index]="$alias;$directory"
+    \printf "%d) %s -> %s\n" "$alias_index" "$alias" "$directory"
+    ((alias_index++))
+
+  done < "$FILE"
+
+
+  local dirListLength="${#aliases[@]}"
+
+
+  if [[ "$dirListLength" -eq 0 ]]; then
+
+    printDelayedText "No aliases found in the database!"
+
+    . "$SCRIPT_DIR/exitScript.sh" "$$"
+
+  fi
+
+
+  \printf "\nEnter the number of the alias you want to navigate to: "  
+  read choice
+  \printf "\n"
+
+
+  if [[ "$choice" -ge 1 && "$choice" -lt "$alias_index" ]]; then
+
+    local selected_entry="${aliases[$choice]}"
+    local selected_alias="${selected_entry%%;*}"
+    changeDir "$selected_alias"
+
+  else
+
+    printDelayedText "Invalid selection!"
+  
   fi
 
 }
+
 
 helpUser(){
 
-  echo -e "\n -c | createShortCut\n\n-fc | checkFile\n\n-fe | editFile\n\n-ff | flushFile\n\n-fd | deleteFile\n\n-fs | showFile\n\n-fr | restoreFile\n"
+  \printf "\n
+  -c | Creates a ShortCut - e.g. sc -c <Alias>\n\n
+  -l | Lists all saved Shortcuts allowing the User to change directory based-off the corresponding number entered in the terminal\n\n
+  -fc | Checks the existence of the Database File\n\n
+  -fe | Edits the Database File using Nano, Vi, Vim, Nvim, or Emacs\n\n
+  -ff | Flushes the Database File - emptying its contents, but leaving the File there\n\n
+  -fd | Deletes the Database File\n\n
+  -fs | Shows the Database File's entries - via Cat or Less depending on the User's Database size\n\n
+  -fr | Restores the Database File's contents from an automatic backup - added safety net in the event of User error or unintended behaviour\n\n\n
+  These two functions exist for Re-installation and Uninstallation:\n
+  \t--reinstall | Reinstalls the script again by calling the install script\n\n
+  \t--uninstall | Uninstalls the program, removing the Alias' set in the .rc files, and removing the Man Page, as well as Deleting the Program Folder\n
+  "
 
 }
+
 
 backupFile(){
+
 # run this before flushFile & deleteFile just as a safety net!
   local fileBackup="${FILE}.bk"
-  cp $FILE $fileBackup
-#  return 0
+
+  \cp "$FILE" "$fileBackup" || { \printf "Error: Failed to create backup of Database file!\n"; }
 
 }
+
 
 restoreFile(){
 
+  \printf "\nDo you want to restore backup? Doing so will overwrite your current Database (y/n):"
 
-  echo -e "Do you want to restore backup? Doing so will overwrite your current Database (y/n):\n"
-
-  read ans && 
+  read ans
+  
   case "$ans" in
-    "y" | "Y" | "yes" | "Yes" | "yah" | "Yah" | "yeh" | "Yeh" | "yas" | "Yas") local check=1
-    ;;
-    "n" | "N" | "no" | "No" | "nah" | "Nah" | "nope" | "Nope") local check=0 
-    ;;
-  esac
-
-  if [ "$check" -eq 1 ]; then
-    cat "$CONFIG_DIR"/shortcuts.txt.bk > "$CONFIG_DIR"/shortcuts.txt &&
+    
+    "y" | "Y" | "yes" | "Yes" | "yah" | "Yah" | "yeh" | "Yeh" | "yas" | "Yas")     
+      
+      \cat "$CONFIG_DIR"/shortcuts.txt.bk > "$CONFIG_DIR"/shortcuts.txt
       printDelayedText "Your backup has been restored!"
 
-  else
-    printDelayedText "Exiting now...."
-  fi
+    ;;
+
+    "n" | "N" | "no" | "No" | "nah" | "Nah" | "nope" | "Nope")
+
+      printDelayedText "Exiting now...."
+
+    ;;
+
+  esac
 
 }
+
 
 main_sc(){
 
-  checkFile_Secondary &&
-  sleep 2
+  
+  checkFile_Secondary
 
   #if $2 isnt empty, else run the change dir
   case "$1" in
-    -c) createShortCut
+    
+    -c | create-shortcut)
+
+      if [ $# -gt 2 ]; then
+
+        printDelayedText "Error! Alias cannot contain a space!"
+
+      elif [ -z "$Alias" ]; then
+
+        printDelayedText "Sorry, but no! I'm not letting you set an empty Alias.  My program, my rules!"
+
+      elif \grep -q "?" <<< "$Alias"; then
+
+        #Fix to a possible error that could arise due to '?' behaving a certain way in zShell!
+        printDelayedText "Error! Alias cannot contain a '?'!"
+      
+      else 
+
+        createShortCut
+      
+      fi
+
     ;;
-    -fc) checkFile
+
+    
+    -l | --list) 
+    
+      if [ $# -gt 1 ]; then
+
+      printDelayedText "Error! Too many arguments provided!"
+    
+      else
+        
+        listAliases
+      
+      fi
+
     ;;
-    -fe) editFile
+
+    
+    -fc | --file-check) 
+    
+      if [ $# -gt 1 ]; then
+
+      printDelayedText "Error! Too many arguments provided!"
+    
+      else
+
+        checkFile
+      
+      fi
+
     ;;
-    -ff) flushFile
+
+
+    -fe | --file-edit) 
+
+      if [ $# -gt 1 ]; then
+
+        printDelayedText "Error! Too many arguments provided!"
+      
+        else
+
+          editFile
+        
+        fi
+
     ;;
-    -fd) deleteFile
+
+
+    -ff | --file-flush)
+
+      if [ $# -gt 1 ]; then
+
+        printDelayedText "Error! Too many arguments provided!"
+      
+      else
+
+        flushFile
+        
+      fi
+
     ;;
-    -fs) showFile
+
+
+    -fd | --file-delete)
+
+      if [ $# -gt 1 ]; then
+
+        printDelayedText "Error! Too many arguments provided!"
+      
+      else
+
+        deleteFile
+        
+      fi
+
     ;;
-    -fr) restoreFile
-    ;; 
-    #--debug purposes --this will be an automatic function
-    #-fb) backupFile
-    #;; 
-    --reinstall) . $INSTALLATION_DIR/install.sh
-    ;;  
-    --uninstall) . $INSTALLATION_DIR/uninstall.sh
+
+
+    -fs | --file-show)
+
+      if [ $# -gt 1 ]; then
+
+        printDelayedText "Error! Too many arguments provided!"
+      
+      else
+
+        showFile
+        
+      fi
+
     ;;
-    --help | -h) helpUser
-    ;;  
-    -*) echo "Invalid option" && helpUser
+
+
+    -fr | --file-restore)
+
+      if [ $# -gt 1 ]; then
+
+        printDelayedText "Error! Too many arguments provided!"
+      
+      else
+
+        restoreFile
+        
+      fi
+
     ;;
+
+
+    --reinstall)
+
+      if [ $# -gt 1 ]; then
+
+        printDelayedText "Error! Too many arguments provided!"
+      
+      else
+
+        . "$INSTALLATION_DIR/install.sh"
+        
+      fi
+
+    ;;
+
+
+    --uninstall)
+
+      if [ $# -gt 1 ]; then
+
+        printDelayedText "Error! Too many arguments provided!"
+      
+      else
+
+        . "$INSTALLATION_DIR/uninstall.sh" 
+
+      fi
+
+    ;;
+
+
+    --help | -h)
+
+      if [ $# -gt 1 ]; then
+
+        printDelayedText "Error! Too many arguments provided!"
+      
+      else
+
+        helpUser
+      
+      fi
+
+    ;;
+
+
+    -*) 
+
+      printDelayedText "Invalid option"
+      helpUser
+    
+    ;;
+
+
     #when an $Alias, changeDir
-    $1) changeDir $1
+    "$1")
+      
+      if [ "$#" -gt 1 ]; then
+
+        printDelayedText "Error! Alias cannot contain a space!"
+
+      elif [ -z "$1" ]; then
+
+        printDelayedText "Error! No Alias provided!"
+
+      else
+
+        changeDir "$1"
+
+      fi
+
     ;;
+
   esac
+
 }
 
-main_sc $@
+
+main_sc "$@"

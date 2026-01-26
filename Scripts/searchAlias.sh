@@ -7,7 +7,7 @@ searchAlias(){
   local FILE="$3"
 
 
-  grep "^$Alias;" "$FILE" | cut -d ";" -f2
+  grep "^$Alias;" "$FILE" 2>/dev/null | cut -d ";" -f2
 
 
 }

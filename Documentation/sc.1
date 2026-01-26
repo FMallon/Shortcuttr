@@ -5,6 +5,8 @@ Shortcuttr \- sets an Alias to a Directory
 .B sc
 .RB [ \-c
 .IR Create-Alias ]
+.RB [ \-l
+.IR List-Aliases ]
 .RB [ \-fc
 .IR  Checks-Database ]
 .RB [ \-fd
@@ -17,18 +19,24 @@ Shortcuttr \- sets an Alias to a Directory
 .IR Show-Database ]
 .RB [ \--help
 .IR User-Guide]
+.RB [ \--reinstall
+.IR Reinstall-Shortcuttr]
 .RB [ \--uninstall
 .IR Uninstall-Shortcuttr]
 
 .P
 .SH DESCRIPTION
 .B Shortcuttr
-sets an Alias to a Directory, storing it in a Database so that a User may quickly change directory - even after reboot.  User can also manage the Database, with the ability to Edit, Flush, Delete, and Display
+sets an Alias to a Directory, storing it in a Database so that a User may quickly change directory.  The User can also manage the Database, with the ability to Edit, Flush, Delete, and simply Display it quickly in the User's terminal!
 .SH FLAGS
 .TP
 .B \-c
 Creates the Alias to the current Directory of the User
 
+.SH
+.TP
+.B \-l
+Lists all saved Shortcuts allowing the User to change the directory based-off the corresponding number entered in the terminal
 .SH
 .TP
 .B \-fc
@@ -68,6 +76,16 @@ Brings the User to the corresponding directory set by the User
 .TP
 .B \--help
 Brings up a summarized User-Manual to help the stupid
+
+.SH
+.TP
+.B \--reinstall
+Reinstalls the script again by calling the install script
+
+.SH
+.TP
+.B \--uninstall
+Uninstalls the program, removing the Alias' set in the .rc files, and removing the Man Page, as well as Deleting the Program Folder
 
 .SH AUTHOR
 .B Finn Mallon

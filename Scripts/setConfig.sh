@@ -1,5 +1,7 @@
 #!/bin/sh
 
+################## Unused - maybe used in the future if I decide to implement it, but may be a shit idea cuz no Type handling existing! ##################
+
 if [ -n "$BASH_VERSION" ]; then
   SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 elif [ -n "$ZSH_VERSION" ]; then
@@ -68,10 +70,10 @@ setVariables(){
 
 }
 
-main(){
+setConfig_main(){
 
   setVariables
 
 }
 
-main
+setConfig_main

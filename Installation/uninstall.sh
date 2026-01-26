@@ -1,12 +1,12 @@
 #!/bin/sh 
 
 # This should enable flexible use across other Users' distros by creating a set Absolute Path to User's program location;
-
 if [ -n "$BASH_VERSION" ]; then
   INSTALLATION_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 elif [ -n "$ZSH_VERSION" ]; then  
   INSTALLATION_DIR="$(cd "$(dirname "$0")" && pwd)"
 fi  
+
 
 SCRIPT_DIR="$INSTALLATION_DIR/../Scripts"
 CONFIG_DIR="$INSTALLATION_DIR/../Config"
@@ -17,81 +17,124 @@ PROGRAM_DIR="$INSTALLATION_DIR/../../Shortcuttr"
 DEPENDENCIES_DIR="$INSTALLATION_DIR/../Dependencies"
 DOCUMENTATION_DIR="$INSTALLATION_DIR/../Documentation"
 
-MANUAL_DIR="/usr/local/share/man/man1/"
+MANUAL_DIR="/usr/local/share/man/man1"
 
 # Import printDelayedText function;
-. "$SCRIPT_DIR/printDelayedText.sh"
+"$SCRIPT_DIR/printDelayedText.sh"
+
+
+
+#Subshell kill -SIGINT $$ fix - adds true/false to temp file, takes from it if in subshell;
+SCRIPT_PID="$$"
+###############################################
+
 
 # remove all of the contents of the folder, and make sure to remove the line from .bashrc
 
-removeFolder(){
+userValidation(){
   
 # Remove Shortcuttr 
 
-  if [ -n "$BASH_VERSION" ]; then  
-    read -p "Are you sure you wish to uninstall the Program & your saved Data? (y/n):" answer
-  elif [ -n "$ZSH_VERSION" ]; then
-    echo "Are you sure you wish to unistall the Program & your saved Data (y/n): \c" 
-    read answer
-  fi
+  \printf "\n"
 
+  if [ -n "$BASH_VERSION" ]; then
+
+    read -p "Are you sure you wish to uninstall the Program & your saved Data? (y/n): " answer
+  
+  elif [ -n "$ZSH_VERSION" ]; then
+    
+    \printf "\n\nAre you sure you wish to uninstall the Program & your saved Data (y/n): \c" 
+    
+    read answer
+  
+  else
+
+    read -p "Are you sure you wish to uninstall the Program & your saved Data? (y/n):" answer
+
+  fi
+  
+
+  
   case "$answer" in
   
     [yY] | [yY][eE][sS])
 
-      cd "$PROGRAM_DIR/../"
-      sudo rm -rf "Shortcuttr"
-      printDelayedText "Folder removed...."
+      \printf "\nProceeding with Uninstall process.........\n"
+      \sleep 1
+
     ;;
     
     *)
-      printDelayedText "Aborting Uninstall process........." && 
-      exit
+      printDelayedText "Aborting Uninstall process........."
+      . "$SCRIPT_DIR/exitScript.sh" "$$"
     ;;
 
   esac  
 
+
 }
+
+
+removeFolder(){
+
+      \cd "$PROGRAM_DIR/../"
+      \sudo rm -rf "Shortcuttr" && printf "\nShortcuttr Directory removed.... \n" || { printf "Error: Failed to remove Shortcuttr folder!\n"; }
+      \sleep 1
+
+}
+
 
 
 removeAlias(){
-# Remove ALias from .bashrc
+# Remove Alias from .bashrc & .zshrc;
 
-  sed -i "/^alias sc=/d" "$HOME/.bashrc" &
-  sed -i "/^alias sc=/d" "$HOME/.zshrc" &
+  printf "\nRemoving Alias from .rc files....\n\n"
 
-  echo -e "\n"
+  \sed -i "/^alias sc=/d" "$HOME/.bashrc" 2>/dev/null && \printf "Alias' successfully removed from .bashrc\n" || { \printf "Failed to remove alias from .bashrc! Either an error occurred or the alias was not found!\n"; }
+  \sed -i "/^alias sc=/d" "$HOME/.zshrc" 2>/dev/null && \printf "Alias' successfully removed from .zshrc\n" || { \printf "Failed to remove alias from .zshrc! Either an error occurred or the alias was not found!\n"; }
 
-  printDelayedText "Alias removed from .bashrc & .zshrc"
+  \printf "\n"
+  
+  \sleep 1
+
 
 }
+
+
 
 removeManual(){
 # Remove Man Page
-  sudo rm "$MANUAL_DIR/sc.1"
+
+  \sudo rm "$MANUAL_DIR/sc.1" && \printf "Man page successfully removed!\n" || { \printf "\nFailed to remove man page! Either an error occurred or the man page was not initially installed!\n"; }
+
 
 }
 
+
 uninstallShortcuttr(){
   
-  removeFolder && 
-  removeAlias &&
-  removeManual &&
 
-  echo -e "\n"
+  userValidation
+  removeAlias
+  removeManual
+  removeFolder
 
-  printDelayedText "Shortcuttr has been fully Uninstalled" &&
-  
-  echo -e "\n" &&
+  \printf "\n\nShortcuttr should now be Uninstalled!\n\n"
 
-  sleep 0.3 && 
+  sleep 0.3
 
   if [ -n "$BASH_VERSION" ]; then
-    . ~/.bashrc
+
+    \exec bash
+
   elif [ -n "$ZSH_VERSION" ]; then
-    . ~/.zshrc
+
+    \exec zsh
+
   fi
   
+
 } 
+
 
 uninstallShortcuttr
