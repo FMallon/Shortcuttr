@@ -107,7 +107,7 @@ Note: place the download and run installer from the folder you wish to store the
 Go to your desired directory where you wish to keep the Program Folder and copy paste this line:
   - git clone https://github.com/FMallon/Shortcuttr && sudo chown "$(whoami):$(whoami)" ./Shortcuttr/Installation/install.sh && sudo chmod 755 ./Shortcuttr/Installation/install.sh && . ./Shortcuttr/Installation/install.sh
 
-Kepp an eye on the output to make sure everything installed correctly!
+Keep an eye on the output to make sure everything installed correctly!
 
 If the 'sc' command doesn't work, check your .bashrc/.zshrc files to make sure the alias has been set at the bottom, if not, set manually
   - alias sc='Set/Your/Directory/Main/directoryShortcut.sh' 
