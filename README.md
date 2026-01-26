@@ -12,10 +12,15 @@ As of 26/01/26, I am releasing a more refined version with:
 
   Not as well tested as I would like, but I haven't much time at the minute.  It works on FreeBSD, so should work on other Unix systems.
   Tested it recently on:
+    
     - Ubuntu VM 
+    
     - FreeBSD VM
+    
     - CentOS Stream VM
-    - Arch on WSL - and it works with Windows paths which is the main thing!  
+    
+    - Arch on WSL..... and it works with Windows paths which is the main thing!  
+    
     - Ubuntu on WSL
 
     Bash and Zshell both seem to be working well and as intended, so hopefully with such a big update, no unknown bugs will be cropping up on your systems.  I have not tested on hardware yet, but.... it's probably fine.
@@ -57,6 +62,7 @@ Tested environments include:
                     -  Unix: Solaris, FreeBSD
     
                     - MacOS: Catalina, Sonora
+    
   - AWS: Amazon Linux
   - Docker: Ubuntu, Alpine
   - OS: Arch, Gentoo, MacOS-Ventura
@@ -110,6 +116,6 @@ Go to your desired directory where you wish to keep the Program Folder and copy 
 Keep an eye on the output to make sure everything installed correctly!
 
 If the 'sc' command doesn't work, check your .bashrc/.zshrc files to make sure the alias has been set at the bottom, if not, set manually
-  - alias sc='Set/Your/Directory/Main/directoryShortcut.sh' 
+  - alias sc='. Set/Your/Directory/Main/directoryShortcut.sh' 
 
 Done! If the Manual page hasn't found its correct place and doesn't work, just manually move the /Shortcuttr/Documentation/sc.1 file into your Man-page folder.  The Man directory is in "/usr/local/share/man/man1/".  You may have to make the directory yourself.
