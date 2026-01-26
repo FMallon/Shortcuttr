@@ -5,7 +5,7 @@ As of 26/01/26, I am releasing a more refined version with:
   - refactoring of code and code improvements - I wrote this script a long time ago, and learned a lot since
   - complete re-do of the install & uninstall script files - functions, error-handling, error-output, and readabilty 
   - improved error handling
-  - removed sole dependancy of Nano for the "-fs" function by adding vi, vim, nvim, & emacs to Edit the Database - this was because I prefer Nano for editing text files quickly... but it's changed now  
+  - removed sole dependancy of Nano for the "-fe" function by adding vi, vim, nvim, & emacs to Edit the Database - this was because I prefer Nano for editing text files quickly... but it's changed now  
   - incorporating Bash builtins over any possible conflictions between builtins and /usr/bin/commands as to improve portability
   - removal of Awk completely to reduce dependencies
   - Unix compatibility, as per the two fixes noted above - Unix Awk behaves differently to GNU Awk, and echo -e is not possible on Unix
