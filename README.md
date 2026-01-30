@@ -96,19 +96,19 @@ Note: place the download and run installer from the folder you wish to store the
 
 "f" means "File", and the "File" is the Database! The following letter should become apparent, and after use, should hopefully become easy to remember.  This was the best way for me at the time.  
 
-           sc -h | Help menu to show the User the Program Usage
-           sc -l | Lists all saved Shortcuts allowing the User to change directory based-off the corresponding number entered in the terminal\n\n
-          sc -fc | Checks database's existence, to verify for the User.  Creates database if non-existent
-          sc -fd | Deletes the whole database file
-          sc -fe | Edits the database, via Nano  
-          sc -ff | Flushes the database, keeping the file, but emptying its contents
-          sc -fr | Restores the database from a backup, in case user accidentally deletes or flushes it
-          sc -fs | Shows the database in the terminal for the User to quickly view their Aliases
-      sc <Alias> | Will change directory to the corresponding alias in the Database File
-   sc -c <Alias> | Creates a Shortcut to the current directory with the given Alias
-   sc -d <Alias> | Deletes a Shortcut from the Database with the given Alias
-  sc --reinstall | Runs the installer again, in case of partial install (alias in .bashrc/zshrc must be set)  
-  sc --uninstall | Uninstalls Shortcuttr in a quicker way for the User
+             sc -h | Help menu to show the User the Program Usage
+             sc -l | Lists all saved Shortcuts allowing the User to change directory based-off the corresponding number entered in the terminal\n\n
+            sc -fc | Checks database's existence, to verify for the User.  Creates database if non-existent
+            sc -fd | Deletes the whole database file
+            sc -fe | Edits the database, via Nano  
+            sc -ff | Flushes the database, keeping the file, but emptying its contents
+            sc -fr | Restores the database from a backup, in case user accidentally deletes or flushes it
+            sc -fs | Shows the database in the terminal for the User to quickly view their Aliases
+        sc <Alias> | Will change directory to the corresponding alias in the Database File
+     sc -c <Alias> | Creates a Shortcut to the current directory with the given Alias
+     sc -d <Alias> | Deletes a Shortcut from the Database with the given Alias
+    sc --reinstall | Runs the installer again, in case of partial install (alias in .bashrc/zshrc must be set)  
+    sc --uninstall | Uninstalls Shortcuttr in a quicker way for the User
 
 
 ###########################################################################################################
@@ -120,7 +120,8 @@ Note: place the download and run installer from the folder you wish to store the
 
   
 Go to your desired directory where you wish to download & keep the Program Folder, then copy paste this line:
-  - git clone https://github.com/FMallon/Shortcuttr && sudo chown $(whoami):$(whoami) ./Shortcuttr/Installation/install.sh && sudo chmod 755 ./Shortcuttr/Installation/install.sh && . ./Shortcuttr/Installation/install.sh
+
+    git clone https://github.com/FMallon/Shortcuttr && sudo chown $(whoami):$(whoami) ./Shortcuttr/Installation/install.sh && sudo chmod 755 ./Shortcuttr/Installation/install.sh && . ./Shortcuttr/Installation/install.sh
 
 Keep an eye on the output to make sure everything installed correctly!
 
