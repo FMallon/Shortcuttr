@@ -14,9 +14,9 @@ searchDuplicate(){
   local FILE="$3"
   
   if grep -q "^$Alias;" "$FILE" || grep -q ";$Cwd$" $FILE; then
-    return 1 
+    return 0 
   else
-    return 2
+    return 1
   fi
 
 }

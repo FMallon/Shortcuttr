@@ -88,10 +88,29 @@ removeFolder(){
 removeAlias(){
 # Remove Alias from .bashrc & .zshrc;
 
-  printf "\nRemoving Alias from .rc files....\n\n"
 
-  \sed -i "/^alias sc=/d" "$HOME/.bashrc" 2>/dev/null && \printf "Alias' successfully removed from .bashrc\n" || { \printf "Failed to remove alias from .bashrc! Either an error occurred or the alias was not found!\n"; }
-  \sed -i "/^alias sc=/d" "$HOME/.zshrc" 2>/dev/null && \printf "Alias' successfully removed from .zshrc\n" || { \printf "Failed to remove alias from .zshrc! Either an error occurred or the alias was not found!\n"; }
+  \printf "\nRemoving Alias from .rc files....\n\n"
+
+  if \grep -q "alias sc=" "$HOME/.bashrc"; then
+    
+    \sed -i "/^alias sc=/d" "$HOME/.bashrc" 2>/dev/null && \printf "Alias' successfully removed from .bashrc\n"
+
+  else
+
+    \printf "Failed to remove alias from .bashrc! Either an error occurred or the alias didn't exist!\n"
+
+  fi
+
+
+  if \grep -q "alias sc=" "$HOME/.zshrc"; then
+
+    \sed -i "/^alias sc=/d" "$HOME/.zshrc" 2>/dev/null && \printf "Alias' successfully removed from .zshrc\n"
+
+  else
+
+    \printf "Failed to remove alias from .zshrc! Either an error occurred or the alias didn't exist!\n"
+
+  fi
 
   \printf "\n"
   

@@ -23,8 +23,9 @@ DOCUMENTATION_DIR="$MAIN_DIR/../Documentation"
 
 FILE="$CONFIG_DIR/shortcuts.txt"
 
-Flag="$1"
-Alias="$2"
+# ${1:-} is a new thing i'm trying out because bash -u complains about unset variables, and I am unsure if this would fuck up older versions of Bash.  Shouldn't cause any issues! 
+Flag="${1:-}"
+Alias="${2:-}"
 Cwd=$(pwd)
 
 createShortCut(){
@@ -38,9 +39,9 @@ createShortCut(){
   #-debug <--- also a bug.  If this is set, $? will be 0, so dont bother, and remember for future;
   #echo "Exit $?"
   #So this will set $? as a var, and keep it stored 
-  check="$?"
+  local check="$?"
 
-  if [ "$check" -eq 1 ]; then
+  if [ "$check" -eq 0 ]; then
     
     printDelayedText "Alias '$Alias' or '$Cwd' already exists in the database!"
 
@@ -259,18 +260,28 @@ listAliases(){
 
 helpUser(){
 
-  \printf "\n
-  -c | Creates a ShortCut - e.g. sc -c <Alias>\n\n
-  -l | Lists all saved Shortcuts allowing the User to change directory based-off the corresponding number entered in the terminal\n\n
-  -fc | Checks the existence of the Database File\n\n
-  -fe | Edits the Database File using Nano, Vi, Vim, Nvim, or Emacs\n\n
-  -ff | Flushes the Database File - emptying its contents, but leaving the File there\n\n
-  -fd | Deletes the Database File\n\n
-  -fs | Shows the Database File's entries - via Cat or Less depending on the User's Database size\n\n
-  -fr | Restores the Database File's contents from an automatic backup - added safety net in the event of User error or unintended behaviour\n\n\n
-  These two functions exist for Re-installation and Uninstallation:\n
-  \t--reinstall | Reinstalls the script again by calling the install script\n\n
-  \t--uninstall | Uninstalls the program, removing the Alias' set in the .rc files, and removing the Man Page, as well as Deleting the Program Folder\n
+  \printf "
+  Shortcuttr - a lightweight terminal navigation tool for Bash & zShell compatible with Linux, Unix, & MacOS
+
+  \tUsage: sc <Alias> || sc <Flag> || sc <Flag> <Alias>
+
+  \t\t-> sc -l | Lists all saved Shortcuts allowing the User to change directory based-off the corresponding number entered in the terminal via User prompt
+  \t\t-> sc -fc | Checks the existence of the Database File
+  \t\t-> sc -fe | Edits the Database File using Nano, Vi, Vim, Nvim, or Emacs
+  \t\t-> sc -ff | Flushes the Database File - emptying its contents, but leaving the File there
+  \t\t-> sc -fd | Deletes the Database File
+  \t\t-> sc -fs | Shows the Database File's entries - via Cat or Less depending on the User's Database size
+  \t\t-> sc -fr | Restores the Database File's contents from an automatic backup - added safety net in the event of User error or unintended behaviour
+  
+  \t\t-> sc <Alias> | Will change directory to the corresponding alias in the Database File
+  \t\t-> sc -c <Alias> | Creates a Shortcut to the current directory with the given Alias
+  \t\t-> sc -d <Alias> | Deletes a Shortcut from the Database with the given Alias
+  
+  \t\tThese two functions exist for Re-installation and Uninstallation:
+  \t\t\t-> sc --reinstall | Reinstalls the script again by calling the install script
+  \t\t\t-> sc --uninstall | Uninstalls the program, removing the Alias' set in the .rc files, and removing the Man Page, as well as Deleting the Program Folder
+
+  \tThere are more verbose Flag names that can viewed in the manual page via 'man sc'\n\n
   "
 
 }
@@ -312,15 +323,105 @@ restoreFile(){
 }
 
 
+
+##################################################################################################################
+
+#This may be more difficult to do than I first thought......
+#I think it has to be moreso on the User end as opposed to within the Program itself; We'll see... 
+
+##This is an attempt to do auto-complete for an alias or flag;
+  ##-try structure it in a way where alias is first, then if current input is '-' or '--', suggest flags;
+  ##-also, remember to test bash completion compatibility!
+  ##-will have to also fkn do another one for zsh 
+
+#_sc_completion(){
+
+
+#  local cur prev
+
+  ##local alias_list=()
+
+#  local alias_list=($(cut -d ';' -f 1 "$FILE"))
+
+#  local flag_list="-c --create-shortcut -l --list -fc --file-check -fe --file-edit -ff --file-flush -fd --file-delete -fs --file-show -fr --file-restore --reinstall --uninstall --help -h"
+ 
+#  COMPREPLY=()
+
+#  cur="${COMP_WORDS[COMP_CWORD]}"
+#  prev="${COMP_WORDS[COMP_CWORD-1]}"
+
+  ## Populate alias_list from the shortcuts file 
+    ##-take the same logic as the while loop in showFile();
+    ##-or maybe use cut command, because I think completion stores it in a string like way seperated by spaces, e.g. "aslias1 aslias2 alias3" etc.  Also it may be better for performance too!
+
+  ##if [ -f "$FILE" ]; then
+    
+   ## while IFS=';' read -r alias directory; do
+      
+    ##  [ -z "$alias" ] && continue
+      
+     ## alias_list+=("$alias")
+    
+    ##done < "$FILE"
+  
+  ##fi  
+
+  ## So if current input starts with '--' then continue with those flags, else if starts with '-' then continue with those flags, else continue with aliases first!
+  #if [[ $cur == --* ]]; then
+
+  #    COMPREPLY=( $(compgen -W "$flag_list" -- "$cur") )
+
+  #elif [[ $cur == -* ]]; then
+
+  #    COMPREPLY=( $(compgen -W "$flag_list" -- "$cur") )
+
+  #else
+
+  #    COMPREPLY=( $(compgen -W "$alias_list" -- "$cur") )
+
+  #fi
+
+
+  #maybe add if greater than 1 word, return; this script takes no more than 1 argument at a time
+#  if [[ $COMP_CWORD -gt 1 ]]; then
+
+#    return
+
+#  fi
+
+#}
+##############################################################################################################
+
+
+deleteShortCut(){
+
+
+  if \grep -q "^$Alias;" "$FILE" 2>/dev/null; then
+    
+    \sed -i "/^$Alias;/d" "$FILE" 2>/dev/null && printDelayedText "Deleting Alias......"
+    \printf "\n"
+
+  else
+  
+    printDelayedText "Alias '$Alias' does not exist in the database!"
+  
+  fi  
+
+  
+  backupFile
+
+}
+
+
 main_sc(){
 
   
   checkFile_Secondary
 
   #if $2 isnt empty, else run the change dir
-  case "$1" in
+  case "$Flag" in
     
-    -c | create-shortcut)
+    -c | --create-shortcut)
 
       if [ $# -gt 2 ]; then
 
@@ -343,7 +444,26 @@ main_sc(){
 
     ;;
 
+
+    -d | --delete-shortcut)
+
+      if [ $# -gt 2 ]; then
+
+        printDelayedText "Error! Alias cannot contain a space!"
+
+      elif [ -z "$Alias" ]; then
+
+        printDelayedText "Error! No Alias provided to delete!"
+
+      else
+
+        deleteShortCut
+      
+      fi
+
+    ;;
     
+
     -l | --list) 
     
       if [ $# -gt 1 ]; then
@@ -503,19 +623,19 @@ main_sc(){
 
 
     #when an $Alias, changeDir
-    "$1")
+    "${1:-}")
       
       if [ "$#" -gt 1 ]; then
 
         printDelayedText "Error! Alias cannot contain a space!"
 
-      elif [ -z "$1" ]; then
+      elif [ -z "${1:-}" ]; then
 
         printDelayedText "Error! No Alias provided!"
 
       else
 
-        changeDir "$1"
+        changeDir "${1:-}"
 
       fi
 

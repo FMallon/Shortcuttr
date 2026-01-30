@@ -27,6 +27,7 @@ MANUAL_DIR="/usr/local/share/man/man1/"
 
 set_man_page(){
 
+
   # Copy Man Page
   \sudo mkdir -p "$MANUAL_DIR" || { \printf "Error: Failed to create manual directory!\n"; }
   \sudo cp "$DOCUMENTATION_DIR/sc.1" "$MANUAL_DIR" || { \printf "Error: Failed to copy man page\n"; }
@@ -34,7 +35,9 @@ set_man_page(){
 }
 
 
+
 set_permissions_owner(){
+
 
   local user=$(whoami)
 
@@ -47,12 +50,16 @@ set_permissions_owner(){
 
 }
 
+
+
+
 set_alias_to_rc(){
+
 
   local alias_name="alias sc='. "$MAIN_DIR"/directoryShortcut.sh'"
 
 
-  if \grep -q "$alias_name" "$HOME/.bashrc" 2>/dev/null; then
+  if \grep -q "$alias_name" "$HOME/.bashrc"; then
 
     \printf "\n$alias_name is already set in .bashrc\n"
    
@@ -60,12 +67,12 @@ set_alias_to_rc(){
 
     \printf "\nSetting Alias to .bashrc file!\n"
 
-    \printf "$alias_name" | sudo tee -a "$HOME/.bashrc" >/dev/null || { printf "Error: Failed to set alias in .bashrc!\n"; }
+    \printf "$alias_name" | sudo tee -a "$HOME/.bashrc" >/dev/null || { \printf "Error: Failed to set alias in .bashrc!\n"; }
 
   fi
 
 
-  if \grep -q "$alias_name" "$HOME/.zshrc" 2>/dev/null; then
+  if \grep -q "$alias_name" "$HOME/.zshrc"; then
   
     \printf "\n$alias_name is already set in .zshrc\n"
 
@@ -73,7 +80,7 @@ set_alias_to_rc(){
 
     \printf "\nSetting Alias to .zshrc\n"
     
-    \printf "%s\n" "$alias_name" | sudo tee -a "$HOME/.zshrc" >/dev/null || { printf "Error: Failed to set alias in .zshrc!\n"; }
+    \printf "%s\n" "$alias_name" | sudo tee -a "$HOME/.zshrc" >/dev/null || { \printf "Error: Failed to set alias in .zshrc!\n"; }
 
   fi
 
@@ -82,6 +89,7 @@ set_alias_to_rc(){
 
 
 }
+
 
 
 
@@ -114,6 +122,7 @@ finish_install(){
   fi
 
 }
+
 
 
 install_sc_main(){

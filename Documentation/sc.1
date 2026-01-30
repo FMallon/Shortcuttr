@@ -1,42 +1,54 @@
 .TH SHORTCUTTR sc
 .SH NAME
-Shortcuttr \- sets an Alias to a Directory
+Shortcuttr \- a lightweight terminal navigation program
 .SH SYNOPSIS
 .B sc
 .RB [ \-c
-.IR Create-Alias ]
+.IR --create-shortcut ]
+.RB [ \-d
+.IR --delete-shortcut ]
 .RB [ \-l
-.IR List-Aliases ]
+.IR --list ]
 .RB [ \-fc
-.IR  Checks-Database ]
+.IR  --file-check ]
 .RB [ \-fd
-.IR Deletes-Database ]
+.IR --file-delete ]
 .RB [ \-fe
-.IR Edits-Database ]
+.IR --file-edit ]
 .RB [ \-ff
-.IR Flushes-Database ]
+.IR --file-flush ]
+.RB [ \-fr
+.IR --file-restore ]
 .RB [ \-fs
-.IR Show-Database ]
-.RB [ \--help
-.IR User-Guide]
-.RB [ \--reinstall
-.IR Reinstall-Shortcuttr]
-.RB [ \--uninstall
-.IR Uninstall-Shortcuttr]
+.IR --file-show ]
+.RB [ \-h
+.IR --help ]
+.RB [ \--reinstall ]
+.RB [ \--uninstall ]
 
 .P
 .SH DESCRIPTION
 .B Shortcuttr
-sets an Alias to a Directory, storing it in a Database so that a User may quickly change directory.  The User can also manage the Database, with the ability to Edit, Flush, Delete, and simply Display it quickly in the User's terminal!
+is a lightweight tool for Bash & zShell compatible with Linux, Unix, & MacOS terminals - reliant on as minimal dependencies as possible - allowing a user to quickly navigate their terminal via persistent Aliases set to Directories without having to pollute their .rc files or manually set aliases every session!
+
+.SH Usage
+.TP
+Usage: sc <Alias> || sc <Flag> || sc <Flag> <Alias>
+
 .SH FLAGS
 .TP
 .B \-c
-Creates the Alias to the current Directory of the User
+Creates the Alias to the current Directory of the User - e.g: sc -c <Alias>
 
+.SH
+.TP
+.B \-d
+Deletes an Alias set in the Database based-off the entered Alias - e.g: sc -d <Alias>
 .SH
 .TP
 .B \-l
 Lists all saved Shortcuts allowing the User to change the directory based-off the corresponding number entered in the terminal
+
 .SH
 .TP
 .B \-fc
@@ -57,11 +69,6 @@ Enables the User to manually edit the Database to fix any mistakes without havin
 .B \-ff
 Deletes all the previously-set Alias' so that the User may begin again
 
-.SH
-.TP
-.B \-fs
-Displays the Database in the CLI for the User so they can easily look at their Alias
-
 .SH 
 .TP
 .B \-fr
@@ -69,7 +76,12 @@ Restores the Database from an automatic backup
 
 .SH
 .TP
-.B \<Alias Name>
+.B \-fs
+Displays the Database in the CLI for the User so they can easily look at their Alias
+
+.SH
+.TP
+.B \<Alias>
 Brings the User to the corresponding directory set by the User
 
 .SH

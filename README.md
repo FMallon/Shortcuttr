@@ -1,3 +1,16 @@
+# Description
+
+Shortcuttr is a lightweight terminal navigation tool for Bash & zShell compatible with Linux, Unix, & MacOS terminals - reliant on as minimal dependencies as possible - allowing a User to quickly navigate their terminal via persistent Aliases set to Directories without having to pollute their .rc files or manually set aliases every session!
+
+
+# Update 30/01/26
+
+Neither a Minor Update nor a Major Update - a Mid Update?
+  - added new functionality: "sc -d <alias>" which is a delete function to delete the corresponding alias - don't know why I only thought to do that now.  Only took 5 mins to do, and testing thus far works
+  - code improvements: got rid of the bash -u unset variable error (which was an error returned via bash -u <Program>, but could be concern for older versions of Bash, hence the fix.  To be honest, I don't know, but better safe than sorry!), as well as improvements to error handling on 'sed' commands which basically always returns success despite the outcome
+  - updated help function & man page
+
+
 # Update 26/01/26
 
 As of 26/01/26, I am releasing a more refined version with:
@@ -5,22 +18,17 @@ As of 26/01/26, I am releasing a more refined version with:
   - refactoring of code and code improvements - I wrote this script a long time ago, and learned a lot since
   - complete re-do of the install & uninstall script files - functions, error-handling, error-output, and readabilty 
   - improved error handling
-  - removed sole dependancy of Nano for the "-fe" function by adding vi, vim, nvim, & emacs to Edit the Database - this was because I prefer Nano for editing text files quickly... but it's changed now  
+  - removed sole dependancy of Nano for the "-fs" function by adding vi, vim, nvim, & emacs to Edit the Database - this was because I prefer Nano for editing text files quickly... but it's changed now  
   - incorporating Bash builtins over any possible conflictions between builtins and /usr/bin/commands as to improve portability
   - removal of Awk completely to reduce dependencies
   - Unix compatibility, as per the two fixes noted above - Unix Awk behaves differently to GNU Awk, and echo -e is not possible on Unix
 
   Not as well tested as I would like, but I haven't much time at the minute.  It works on FreeBSD, so should work on other Unix systems.
   Tested it recently on:
-    
     - Ubuntu VM 
-    
     - FreeBSD VM
-    
     - CentOS Stream VM
-    
-    - Arch on WSL..... and it works with Windows paths which is the main thing!  
-    
+    - Arch on WSL - and it works with Windows paths which is the main thing!  
     - Ubuntu on WSL
 
     Bash and Zshell both seem to be working well and as intended, so hopefully with such a big update, no unknown bugs will be cropping up on your systems.  I have not tested on hardware yet, but.... it's probably fine.
@@ -62,7 +70,6 @@ Tested environments include:
                     -  Unix: Solaris, FreeBSD
     
                     - MacOS: Catalina, Sonora
-    
   - AWS: Amazon Linux
   - Docker: Ubuntu, Alpine
   - OS: Arch, Gentoo, MacOS-Ventura
@@ -89,17 +96,19 @@ Note: place the download and run installer from the folder you wish to store the
 
 "f" means "File", and the "File" is the Database! The following letter should become apparent, and after use, should hopefully become easy to remember.  This was the best way for me at the time.  
 
-              -c | Creates the Alias to the current Directory of the User
-              -l | Lists all saved Shortcuts allowing the User to change directory based-off the corresponding number entered in the terminal\n\n
-             -fc | Checks database's existence, to verify for the User.  Creates database if non-existent
-             -fd | Deletes the whole database file
-             -fe | Edits the database, via Nano  
-             -ff | Flushes the database, keeping the file, but emptying its contents
-             -fr | Restores the database from a backup, in case user accidentally deletes or flushes it.
-             -fs | Shows the database in the terminal for the User to quickly view their Aliases
-    -h || --help | Help menu to show the User the flags
-     --reinstall | Runs the installer again, in case of partial install (alias in .bashrc/zshrc must be set)  
-     --uninstall | Uninstalls Shortcuttr in a quicker way for the User
+           sc -h | Help menu to show the User the Program Usage
+           sc -l | Lists all saved Shortcuts allowing the User to change directory based-off the corresponding number entered in the terminal\n\n
+          sc -fc | Checks database's existence, to verify for the User.  Creates database if non-existent
+          sc -fd | Deletes the whole database file
+          sc -fe | Edits the database, via Nano  
+          sc -ff | Flushes the database, keeping the file, but emptying its contents
+          sc -fr | Restores the database from a backup, in case user accidentally deletes or flushes it
+          sc -fs | Shows the database in the terminal for the User to quickly view their Aliases
+      sc <Alias> | Will change directory to the corresponding alias in the Database File
+   sc -c <Alias> | Creates a Shortcut to the current directory with the given Alias
+   sc -d <Alias> | Deletes a Shortcut from the Database with the given Alias
+  sc --reinstall | Runs the installer again, in case of partial install (alias in .bashrc/zshrc must be set)  
+  sc --uninstall | Uninstalls Shortcuttr in a quicker way for the User
 
 
 ###########################################################################################################
@@ -110,12 +119,12 @@ Note: place the download and run installer from the folder you wish to store the
 # Installation
 
   
-Go to your desired directory where you wish to keep the Program Folder and copy paste this line:
-  - git clone https://github.com/FMallon/Shortcuttr && sudo chown "$(whoami):$(whoami)" ./Shortcuttr/Installation/install.sh && sudo chmod 755 ./Shortcuttr/Installation/install.sh && . ./Shortcuttr/Installation/install.sh
+Go to your desired directory where you wish to download & keep the Program Folder, then copy paste this line:
+  - git clone https://github.com/FMallon/Shortcuttr && sudo chown $(whoami):$(whoami) ./Shortcuttr/Installation/install.sh && sudo chmod 755 ./Shortcuttr/Installation/install.sh && . ./Shortcuttr/Installation/install.sh
 
 Keep an eye on the output to make sure everything installed correctly!
 
 If the 'sc' command doesn't work, check your .bashrc/.zshrc files to make sure the alias has been set at the bottom, if not, set manually
   - alias sc='. Set/Your/Directory/Main/directoryShortcut.sh' 
 
-Done! If the Manual page hasn't found its correct place and doesn't work, just manually move the /Shortcuttr/Documentation/sc.1 file into your Man-page folder.  The Man directory is in "/usr/local/share/man/man1/".  You may have to make the directory yourself.
+Done! If the Manual page hasn't found its correct place and doesn't work, just manually move the /Shortcuttr/Documentation/sc.1 file into your Man-page folder.  The Man directory is usually in "/usr/local/share/man/man1/".  You may have to make the directory yourself.
