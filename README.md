@@ -1,6 +1,6 @@
 # Description
 
-Shortcuttr is a lightweight terminal navigation tool for Bash & zShell compatible with Linux, Unix, & MacOS terminals - reliant on as minimal dependencies as possible - allowing a User to quickly navigate their terminal via persistent Aliases set to Directories without having to pollute their .rc files or manually set aliases every session!
+Shortcuttr is a lightweight terminal navigation tool for Bash & zShell that is compatible with Linux, Unix, & MacOS terminals - reliant on as minimal dependencies as possible - allowing a User to quickly navigate their terminal via persistent Aliases set to Directories without having to pollute their .rc files or manually set aliases every session!
 
 
 # Update 30/01/26
@@ -10,6 +10,14 @@ Neither a Minor Update nor a Major Update - a Mid Update?
   - code improvements: got rid of the bash -u unset variable error (which was an error returned via bash -u <Program>, but could be concern for older versions of Bash, hence the fix.  To be honest, I don't know, but better safe than sorry!), as well as improvements to error handling on 'sed' commands which basically always returns success despite the outcome
   - updated help function & man page
 
+
+More testing done on:
+  
+    - Debian 13 (in VMWare) 
+    - Alpine Linux (in KVM/QEMU inside a Debian 13 VM in VMWare...) - and using Bash as the shell obviously 
+    
+    Note: MacOS testing will come soon, but I need to see a friend for that - I'm not installing MacOS in a VM again, it's too slow & shit! 
+    
 
 # Update 26/01/26
 
@@ -25,6 +33,7 @@ As of 26/01/26, I am releasing a more refined version with:
 
   Not as well tested as I would like, but I haven't much time at the minute.  It works on FreeBSD, so should work on other Unix systems.
   Tested it recently on:
+  
     - Ubuntu VM 
     - FreeBSD VM
     - CentOS Stream VM
