@@ -161,6 +161,8 @@ showFile(){
 
   local lineCount=$(wc -l < "$FILE")
   local temp_file=$(mktemp)
+  trap '\rm -f "$temp_file"' EXIT SIGINT SIGTERM
+
 
   #the limit that will decide whether to use Cat or Less based on the size of the DB;
   local limit=25
