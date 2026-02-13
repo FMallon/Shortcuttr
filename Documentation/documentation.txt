@@ -35,8 +35,19 @@ environment due to the nature of the Program needing to be sourced in order to c
 
 Add functionality to list directories, then enter a number in the terminal corresponding to the Alias & Directory.
 
+Make sure to add a trap SIGINT SIGTERM for the mktemp in function show_file() - it does not cleanup on ctrl+c;
+  -watch -n 0.5 'tree /tmp/' shows the file is still there even on user termination, and I can cat the temp file and its contents.  
+  --may need to account for error handling in the 'rm -f "$temp_file" but it should be fine' 
 
-######################## All Done ########################
+
+^######################## All Done ########################^
+
+Fix that function check_file() that runs on everything including the help function on first use! 
+
+Maybe make it fully Bash so I can do full error-handling on everything!
+  -E.g: 'sc -c "docs;fdsche"' will set the path to 'fdsche;/path/to/documents';
+  --has bad handling when quotes are used, even though the script is meant to be used without it, but I'd rather account for it
+  ---either full error/regex handling in Bash, or find a way to disable quotes being used... either way, probably best to give up on full compatibility with Shell.  Focus on Bash & zsh only. 
 
 
 Bash completion and Zshell completion by tabbing - probably have to get Aliases, set to a tmp file - or a file somewhere - then call complete -F..... 
