@@ -1,6 +1,9 @@
 #!/usr/bin/env bash
 
-SCRIPT_PID="$$"
+#SCRIPT_PID="$$"
+
+#-debug 
+#echo "Main PID - $SCRIPT_PID"
 
 # This should enable flexible use across other Users' distros by creating a set Absolute Path to User's program location;
 if [ -n "$BASH_VERSION" ]; then
@@ -22,17 +25,21 @@ DOCUMENTATION_DIR="$MAIN_DIR/../Documentation"
 
 
 FILE="$CONFIG_DIR/shortcuts.txt"
+FILE_BACKUP="$CONFIG_DIR/shortcuts.txt.bk"
 
 # ${1:-} is a new thing i'm trying out because bash -u complains about unset variables, and I am unsure if this would fuck up older versions of Bash.  Shouldn't cause any issues! 
 Flag="${1:-}"
 Alias="${2:-}"
 Cwd=$(pwd)
 
+
 createShortCut(){
 
+  
   #-debug
   #echo "Exit $?" #right now, everything is Exit 0
   
+  checkFile_Secondary
 
   . "$SCRIPT_DIR/duplicateSearch.sh"
 
@@ -55,44 +62,49 @@ createShortCut(){
   
   backupFile
 
+
 }
 
 
+
 changeDir(){
- 
+
+
   local Alias="$1"
 
   local Cwd=$(. "$SCRIPT_DIR/searchAlias.sh" $Alias)
   
   if [ ! -z "$Cwd" ]; then
     printDelayedText "Changing directory...."
-    \cd "$Cwd"
+    \cd "$Cwd" 2>/dev/null || { \printDelayedText "\nThis Directory doesn't exist!\n"; }
   else
     printDelayedText "This Alias does not exist! You can view your Database with | -fs |"
   fi 
+
+
 }
+
 
 
 checkFile_Secondary(){
-  #check for file, and create if doesnt exit
+  #--Fix this shit!!!!! check for file, and create if doesnt exit
   
   
-  if [ -e "$FILE" ]; then
+  if [ ! -e "$FILE" ]; then
     
-    return 1
-  
-  else
-
     \printf "\n" 
     printDelayedText "Database doesn't exist! Creating now...."
-    \touch "$FILE" || { \printf "Error: Failed to create Database file!\n"; }
+    \touch "$FILE" 2>/dev/null || { \printf "\nError: Failed to create Database file!\n"; }
 
   fi
+  
 
 }
 
 
+
 checkFile(){
+
 
   if [ -e "$FILE" ]; then
 
@@ -100,17 +112,24 @@ checkFile(){
 
   else
     printDelayedText "Database doesn't exist! Creating now...."
-    \touch "$FILE" || { \printf "Error: Failed to create Database file!\n"; }
+    \touch "$FILE" 2>/dev/null || { \printf "\nError: Failed to create Database file!\n"; }
     
   fi
+
+
 }
+
 
 
 editFile(){
 
-  nano "$FILE" || vi "$FILE" || vim "$FILE" || nvim "$FILE" || emacs "$FILE" || { \printf "Error: No text editor found! Please install Nano, Vi or Vim to edit the Database file!\n"; . "$SCRIPT_DIR/exitScript.sh" "$$"; }
+
+  checkFile_Secondary
+
+  \nano "$FILE" 2>/dev/null || \vi "$FILE" 2>/dev/null || \vim "$FILE" 2>/dev/null || \nvim "$FILE" 2>/dev/null || \emacs "$FILE" 2>/dev/null || { \printf "\nError: No text editor found! Please install Nano, Vi, Neovim, Emacs or Vim to edit the Database file!\n"; return 1; }
 
   backupFile
+
 
 }
 
@@ -122,7 +141,11 @@ editFile(){
 #}
 
 
+
 flushFile(){
+
+
+  checkFile_Secondary
 
   backupFile
 
@@ -136,32 +159,40 @@ flushFile(){
 
   \printf "\nA backup was created just in case!\n\n"
 
+
 }
+
 
 
 #-debug purposes
 deleteFile(){
 
+
   backupFile
 
   printDelayedText "The File is being deleted......"
 
-  \rm "$FILE" || { \printf "Error: Failed to delete Database file!\n"; }
+  \rm "$FILE" 2>/dev/null || { \printf "\nError: Failed to delete Database file!\n"; }
 
   printDelayedText "File is deleted!"
 
   \printf "\nA backup was created just in case!\n\n"
 
+
 }
 
 
+
 showFile(){
+
+
+  checkFile_Secondary
 
  #Remember: Don't set $LINES for this because in case this environment variable may not exist on Unix;
 
   local lineCount=$(wc -l < "$FILE")
   local temp_file=$(mktemp)
-  trap '\rm -f "$temp_file"' EXIT SIGINT SIGTERM
+  trap '\rm -f "$temp_file" 2>/dev/null' EXIT SIGINT SIGTERM
 
 
   #the limit that will decide whether to use Cat or Less based on the size of the DB;
@@ -188,26 +219,34 @@ showFile(){
   done < "$FILE"
 
 
-  if [ "$lineCount" -gt "$limit" ]; then
+  if [ "$lineCount" -eq 0 ]; then
 
-    \less "$temp_file"
+    printDelayedText "The Database is currently empty!"
+
+  elif [ "$lineCount" -gt "$limit" ]; then
+
+    \less "$temp_file 2>/dev/null" || \head "$temp_file 2>/dev/null" || { printf "\nError: Less or Head may not be installed on this system!\n"; }
 
   else
 
-    \cat "$temp_file"
+    \cat "$temp_file" 2>/dev/null || {  printf "\nError: Cat may not be installed on this system!\n"; }
 
   fi
 
 
-  \rm -f "$temp_file"
+  \rm -f "$temp_file" 2>/dev/null
 
-  \printf "\n\n"
+  \printf "\n"
 
   
 }
 
 
+
 listAliases(){
+
+
+  checkFile_Secondary
 
   #List all shortcuts and allow user to enter directory by selecting number from list
 
@@ -235,7 +274,9 @@ listAliases(){
 
     printDelayedText "No aliases found in the database!"
 
-    . "$SCRIPT_DIR/exitScript.sh" "$$"
+    #. "$SCRIPT_DIR/exitScript.sh" "$SCRIPT_PID"
+    return 1
+
 
   fi
 
@@ -257,7 +298,9 @@ listAliases(){
   
   fi
 
+
 }
+
 
 
 helpUser(){
@@ -289,17 +332,33 @@ helpUser(){
 }
 
 
+
 backupFile(){
+
+
+  checkFile_Secondary
 
 # run this before flushFile & deleteFile just as a safety net!
   local fileBackup="${FILE}.bk"
 
-  \cp "$FILE" "$fileBackup" || { \printf "Error: Failed to create backup of Database file!\n"; }
+  \cp "$FILE" "$fileBackup" 2>/dev/null || { \printf "\nError: Failed to create backup of Database file!\n\n"; }
+
 
 }
 
 
+
 restoreFile(){
+
+
+  checkFile_Secondary
+
+  if [ ! -s "$FILE_BACKUP" ]; then
+
+    \printf "\nThe Backup Database is empty!\n\n"
+    return 1
+
+  fi
 
   \printf "\nDo you want to restore backup? Doing so will overwrite your current Database (y/n):"
 
@@ -309,7 +368,7 @@ restoreFile(){
     
     "y" | "Y" | "yes" | "Yes" | "yah" | "Yah" | "yeh" | "Yeh" | "yas" | "Yas")     
       
-      \cat "$CONFIG_DIR"/shortcuts.txt.bk > "$CONFIG_DIR"/shortcuts.txt
+      \cp "$FILE_BACKUP" "$FILE" 2>/dev/null || { \printf "\nError: Failed to restore the Database from backup!\n\n"; }
       printDelayedText "Your backup has been restored!"
 
     ;;
@@ -321,6 +380,7 @@ restoreFile(){
     ;;
 
   esac
+
 
 }
 
@@ -395,12 +455,13 @@ restoreFile(){
 ##############################################################################################################
 
 
+
 deleteShortCut(){
 
 
   if \grep -q "^$Alias;" "$FILE" 2>/dev/null; then
-    
-    \sed -i "/^$Alias;/d" "$FILE" 2>/dev/null && printDelayedText "Deleting Alias......"
+  
+    \sed -i "\|^$Alias;|d" "$FILE" 2>/dev/null && printDelayedText "Deleting Alias......"
     \printf "\n"
 
   else
@@ -412,35 +473,114 @@ deleteShortCut(){
   
   backupFile
 
+
 }
+
+
+
+
+#cleanupFile(){
+  #Clean up the Database from bad Paths - this will run only at the User's behest because I don't want to be messing with other people's DBs.... so do not call it on functions!
+  #Under Construction
+
+
+ 
+ # backupFile
+
+  #Remove empty lines in the DB!  
+#  local temp_file="$(mktemp)"
+
+ # local alias 
+  #local directory
+
+  #local i=1
+
+  #trap '\rm -f "$temp_file"' EXIT SIGINT SIGTERM
+
+  #while IFS=';' read -r alias directory; do
+
+    
+   # if [ -d "$directory" ]; then
+ 
+    #  \printf "\n%s;%s\n" "$alias" "$directory" >> temp_file
+    
+    #else
+
+     # \printf "\n%d) Directory %s does not resolve, and will thus be deleted", "$i" "$directory"  
+     # i=$(( i + 1 ))
+
+    #fi
+
+
+  #done < "$FILE"
+
+
+
+  #\mv "$temp_file" "$FILE" || \printf "\nAn error occured during the Cleanup Process!\n"
+  #\rm -f "$temp_file"
+
+  #\printf "\n\n"
+
+
+#}
+
 
 
 main_sc(){
 
-  
-  checkFile_Secondary
 
   #if $2 isnt empty, else run the change dir
   case "$Flag" in
     
     -c | --create-shortcut)
 
+      
       if [ $# -gt 2 ]; then
 
         printDelayedText "Error! Alias cannot contain a space!"
 
+      
       elif [ -z "$Alias" ]; then
 
-        printDelayedText "Sorry, but no! I'm not letting you set an empty Alias.  My program, my rules!"
+        printDelayedText "Sorry, but no! I'm not letting you set an empty Alias.  My program, my rules!" 
 
-      elif \grep -q "?" <<< "$Alias"; then
+      
+      elif \grep -q "?" 2>/dev/null <<< "$Alias"; then
 
         #Fix to a possible error that could arise due to '?' behaving a certain way in zShell!
         printDelayedText "Error! Alias cannot contain a '?'!"
+
+      
+      elif \grep -q "~" 2>/dev/null <<< "$Alias"; then
+
+        #"~" resolves to $HOME; it looks like shit in the db; this will resolve from the sc <$alias> command to "cd ~" 
+        printDelayedText "The Alias '~' already exists by default as an invisible Database entry resolving to $HOME!"
+      
+      
+      elif [ "$Alias" = "$HOME" ]; then
+
+        printDelayedText "The Alias '~' already exists by default as an invisible Database entry resolving to $HOME!"
+
+      
+      elif [ "$Alias" = "." ]; then
+
+        printDelayedText "The Alias '.' already exists by default showing available directories!"
+
+      
+      elif [ "$Alias" = ".." ]; then
+
+        printDelayedText "The Alias '..' already exists by default as an invisible Database entry resolving to the Parent Directory"
+
+      
+      elif [ -d "$Alias" ]; then
+
+        printDelayedText "Warning: this is a Directory name that could cause conflicts!"
+        createShortCut || return 1
+
       
       else 
 
-        createShortCut
+        createShortCut || return 1
       
       fi
 
@@ -459,7 +599,7 @@ main_sc(){
 
       else
 
-        deleteShortCut
+        deleteShortCut || return 1
       
       fi
 
@@ -474,7 +614,7 @@ main_sc(){
     
       else
         
-        listAliases
+        listAliases || return 1
       
       fi
 
@@ -489,7 +629,7 @@ main_sc(){
     
       else
 
-        checkFile
+        checkFile || return 1
       
       fi
 
@@ -504,7 +644,7 @@ main_sc(){
       
         else
 
-          editFile
+          editFile || return 1
         
         fi
 
@@ -519,7 +659,7 @@ main_sc(){
       
       else
 
-        flushFile
+        flushFile || return 1
         
       fi
 
@@ -534,7 +674,7 @@ main_sc(){
       
       else
 
-        deleteFile
+        deleteFile || return 1
         
       fi
 
@@ -549,7 +689,7 @@ main_sc(){
       
       else
 
-        showFile
+        showFile || return 1
         
       fi
 
@@ -564,7 +704,7 @@ main_sc(){
       
       else
 
-        restoreFile
+        restoreFile || return 1
         
       fi
 
@@ -579,7 +719,7 @@ main_sc(){
       
       else
 
-        . "$INSTALLATION_DIR/install.sh"
+        . "$INSTALLATION_DIR/install.sh" || return 1
         
       fi
 
@@ -594,7 +734,7 @@ main_sc(){
       
       else
 
-        . "$INSTALLATION_DIR/uninstall.sh" 
+        . "$INSTALLATION_DIR/uninstall.sh" || return 1
 
       fi
 
@@ -609,17 +749,32 @@ main_sc(){
       
       else
 
-        helpUser
+        helpUser || return 1
       
       fi
 
     ;;
 
 
+ #   --clean-file)
+      #Still in development!
+  #      if [ $# -gt 1 ]; then
+
+   #     printDelayedText "Error! Too many arguments provided!"
+      
+    #  else
+
+     #   cleanupFile
+      
+     # fi
+
+    #;;
+
+
     -*) 
 
       printDelayedText "Invalid option"
-      helpUser
+      helpUser || return 1
     
     ;;
 
@@ -635,9 +790,18 @@ main_sc(){
 
         printDelayedText "Error! No Alias provided!"
 
+      elif [ "${1:-}" = "." ]; then
+
+        \tree -d -L 1 2>/dev/null || \find . -maxdepth 1 -type d 2>/dev/null || \ls -d */ .*/ 2>/dev/null || { \printf "\nError listing directories!\n\n"; }
+
+      elif [ -d "${1:-}" ]; then
+
+        printDelayedText "Changing directory..."
+        \cd "${1:-}"
+
       else
 
-        changeDir "${1:-}"
+        changeDir "${1:-}" || return 1
 
       fi
 
@@ -645,7 +809,8 @@ main_sc(){
 
   esac
 
+
 }
 
 
-main_sc "$@"
+main_sc "$@" || return 1 2>/dev/null || exit 1

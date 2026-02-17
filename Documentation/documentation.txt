@@ -39,10 +39,44 @@ Make sure to add a trap SIGINT SIGTERM for the mktemp in function show_file() - 
   -watch -n 0.5 'tree /tmp/' shows the file is still there even on user termination, and I can cat the temp file and its contents.  
   --may need to account for error handling in the 'rm -f "$temp_file" but it should be fine' 
 
+Fix that function checkFile_Secondary() that runs on everything including the help function on first use!
+  -and fix that stupid fkn 'return 1' in the if statement... it's disgusting! How did I not see that before?!
+
+Fix: sc -l -- firstly, mistake where exitScript.sh calls $$ instead of $SCRIPT_PID
+  -the function does not exit on empty DB, it carries on into the 'read User-input';
+  --fixed by using a return, I dunno why this wasn't working where it works in the uninstall script, but fixed nonetheless. 
+
+Testing shows that if misused, and an Alias is called /var/ for example, I cannot delete it!
+  -This could be a sed delimter issue, so maybe change that.  
+
+Make it like more like: if an $alias is a directory path, then cd there.  Would also fix the issue in my db of '~' appearing as '/home/$(whoami);/home/$(whoami)' - which looks like shit in the DB - by blocking it from initial entry.
+  -so if "sc /log/" it will just check cd first before resolving to aliases; this will also fix my issue of accidentally using sc instead of cd.    
+
+Some better code refactoring/error handling!
 
 ^######################## All Done ########################^
 
-Fix that function check_file() that runs on everything including the help function on first use! 
+Some even better code refactoring/error handling!
+
+Why is the help function not in Alpahbetical order? sc -fd is after -ff! Fkn fix that! It's v annoying!
+
+Come up with a better idea for backup and restore - because rn it backs-up after each entry, so maybe consider a secondary backup function in the background that will replace -fb so the user can backup to a different DB Backup at whatever point in time.
+  -ah fuck, but then how do they restore? The restore file takes from the auto-backup.  Maybe make options for this, idk yet
+
+Write out a test script for Containers - get the containers working first for a quick spin up with minimum config
+  -this will become my way of testing from on in, then I can quickly spin-up a few containers and test automatically!
+
+More testing!
+  -need to fkn test on Mac, ask the Chairwoman for a lend of her Mac!
+  -test more on other Distros, as well as in Terminal Emulators for the return and exits.  I haven't used an interactive terminal in ages, because I'm using Windows/WSL only these days!
+  --test | sc -l where DB is empty |, | sc -fs, -fr, --uninstall | also to make sure those returns/exits dont shut down the terminal completely!
+
+NEW FUNCTION: cleanupFile() 
+  -just make it so that the User can call it, and not everytime! This is the best compromise
+  --because doing what I wanted to do months ago by performing a cleanup task everytime a DB Edit is performed is too stringent, leave it to the User to control their own DB, not me!
+  -perform a dry-run function that will tell the User before, then take User-input to continue/stop!
+
+
 
 Maybe make it fully Bash so I can do full error-handling on everything!
   -E.g: 'sc -c "docs;fdsche"' will set the path to 'fdsche;/path/to/documents';

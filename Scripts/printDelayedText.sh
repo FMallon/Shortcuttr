@@ -17,7 +17,7 @@ DOCUMENTATION_DIR="$SCRIPT_DIR/../Documentation"
 
 printDelayedText(){
 
-  local delay="0.035"
+  local delay="0.0325"
 
   # source config.ini through the setConfig.sh script
   #. "$SCRIPT_DIR/setConfig.sh"

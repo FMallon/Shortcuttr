@@ -3,6 +3,29 @@
 Shortcuttr is a lightweight terminal navigation tool for Bash & zShell that is compatible with Linux, Unix, & MacOS terminals - reliant on as minimal dependencies as possible - allowing a User to quickly navigate their terminal via persistent Aliases set to Directories without having to pollute their .rc files or manually set aliases every session!
 
 
+# Update 17/02/26
+Big changes due to the way I use the tool, I made it behave as 'cd' by default! Basically... sometimes I will be navigating around, then I will 'sc Programs' instead of 'cd' - you get me? So I made cd 'directory' its default behaviour.
+Thus, I have also set invisible Database entries (I will update the help function soon, but I'm working on a new function, as well as older functions, so I will revisit after!):
+  - sc .      #this will list folders in the current directory - using tree, file, or ls
+  - sc ..     #this will return to the parent directory
+  - sc ~      #this will resolve to $HOME, as with ~ or $HOME variable by default on Linux systems
+  - sc /proc  #this will resolve to /proc
+    - if a user, in $HOME, does | sc -c /proc |, the User will be warned of the Conflict.  The alias | sc /proc | will solely resolve to /proc and not $HOME, however, using | sc -l |, the Alias takes precedent!  
+
+Code improvements
+
+Error Handling improvements
+
+UX improvements
+
+Optimization improvements where temp files where being stored in memory on SIGINT/SIGTERM
+
+| -l | continuing to try and get User-input despite the DB being empty
+
+| -d | Changed delimiter in Sed command to account for some shit... I forget
+
+
+
 # Update 30/01/26
 
 Neither a Minor Update nor a Major Update - a Mid Update?
@@ -17,7 +40,8 @@ More testing done on:
     - Alpine Linux (in KVM/QEMU inside a Debian 13 VM in VMWare...) - and using Bash as the shell obviously 
     
     Note: MacOS testing will come soon, but I need to see a friend for that - I'm not installing MacOS in a VM again, it's too slow & shit! 
-    
+
+
 
 # Update 26/01/26
 
@@ -48,7 +72,9 @@ This script was programmed in a way for more Posix compliance, and cross platfor
 
 Ok, enjoy, and if any issues, feel free to tell ppl in the Issues section that it's absolute shite and doesn't work!
 
+
 ###########################################################################################################
+
 
 # General Overview
 

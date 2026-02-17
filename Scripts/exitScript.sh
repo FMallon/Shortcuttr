@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 
 if [ -n "$BASH_VERSION" ]; then
   
@@ -24,6 +24,9 @@ DOCUMENTATION_DIR="$SCRIPT_DIR/../Documentation"
 exit_gracefully(){
 
   local SCRIPT_PID="$1"
+
+  #-debug
+  #echo "Secondary PID - $SCRIPT_PID"
   
   case "$current_environment" in 
     
@@ -31,7 +34,7 @@ exit_gracefully(){
       
       if (( BASH_SUBSHELL > 0 )); then
 
-        exit 0
+        exit 1
 
       else
     
@@ -41,25 +44,12 @@ exit_gracefully(){
     
     ;;
     
+   
     zsh)
 
-    if (( ZSH_SUBSHELL > 0 )); then
+      if (( ZSH_SUBSHELL > 0 )); then
 
-        exit 0
-
-      else
-    
-        kill -SIGINT "$SCRIPT_PID"
-
-      fi
-
-    ;;
-
-    sh)
-
-    if (( ZSH_SUBSHELL > 0 )); then
-
-        exit 0
+        exit 1
 
       else
     
