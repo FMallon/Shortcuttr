@@ -35,7 +35,11 @@ Cwd=$(pwd)
 
 createShortCut(){
 
-  
+  if [[ ! -d "$CONFIG_DIR" ]]; then
+
+    mkdir "$CONFIG_DIR"
+
+  fi
   #-debug
   #echo "Exit $?" #right now, everything is Exit 0
   
