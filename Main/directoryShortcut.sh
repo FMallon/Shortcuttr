@@ -76,7 +76,7 @@ changeDir(){
   
   if [ ! -z "$Cwd" ]; then
     printDelayedText "Changing directory...."
-    \cd "$Cwd" 2>/dev/null || { \printDelayedText "\nThis Directory doesn't exist!\n"; }
+    \cd "$Cwd" 2>/dev/null || { printDelayedText "This Directory doesn't exist!"; }
   else
     printDelayedText "This Alias does not exist! You can view your Database with | -fs |"
   fi 

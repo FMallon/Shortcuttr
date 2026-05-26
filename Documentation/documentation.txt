@@ -90,7 +90,11 @@ Bash completion and Zshell completion by tabbing - probably have to get Aliases,
 
 Functioning Config file that the user can increase the speed of the printDelayedText function.  I imagine it drives some ppl crazy
 and they may not know how to change it, or feel comfortable doing so.... then again, should I bother? I like it, plus: no one has offered any feedback,
-and the Program has at least hundreds of unique clones.  Setting the limit to the -fs function would also make sense.   
+and the Program has at least hundreds of unique clones.  Setting the limit to the -fs function would also make sense.
+
+If an alias is deleted, '\nThis Directory doesn't exist!\n' is printed - so fkn fix that
+
+Also, find a way to clean-up the db, when things are removed, it leaves new lines - maybe just delete new lines
 
 
 ##########################################################
